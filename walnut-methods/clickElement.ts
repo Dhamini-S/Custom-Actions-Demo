@@ -9,15 +9,10 @@ import type { WalnutAndroidContext } from './walnut';
  * category: Element Interaction
  */
 export async function clickElement(ctx: WalnutAndroidContext) {
-  if (ctx.locator) {
-    await ctx.click();
-    return;
+  if (!ctx.locator) {
+    throw new Error('Click Element requires a linked Android object with a captured XPath.');
   }
 
-  const targetText = ctx.objectDescription?.trim();
-  if (!targetText) {
-    throw new Error('Click Element requires a linked locator or a named element.');
-  }
-
-  await ctx.clickByText(targetText);
+  ctx.log(`Clicking ${ctx.objectDescription ?? 'linked Android object'} using XPath: ${ctx.locator}`);
+  await ctx.click();
 }
