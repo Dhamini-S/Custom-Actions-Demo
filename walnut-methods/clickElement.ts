@@ -2,7 +2,7 @@ import type { WalnutAndroidContext } from './walnut';
 
 /** @walnut_method
  * name: Click Element
- * description: Click the linked Android element
+ * description: Click the linked Android element, or its named text when no locator is linked
  * actionType: custom_click_element
  * context: android
  * needsLocator: true
