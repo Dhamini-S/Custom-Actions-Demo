@@ -9,5 +9,15 @@ import type { WalnutAndroidContext } from './walnut';
  * category: Element Interaction
  */
 export async function clickElement(ctx: WalnutAndroidContext) {
-  await ctx.click();
+  if (ctx.locator) {
+    await ctx.click();
+    return;
+  }
+
+  const targetText = ctx.objectDescription?.trim();
+  if (!targetText) {
+    throw new Error('Click Element requires a linked locator or a named element.');
+  }
+
+  await ctx.clickByText(targetText);
 }
