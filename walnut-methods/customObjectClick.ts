@@ -9,25 +9,30 @@ import type { WalnutAndroidContext } from './walnut';
  * category: Element Interaction
  */
 export async function customObjectClick(ctx: WalnutAndroidContext): Promise<void> {
-  const objectName = ctx.objectDescription?.trim() || 'linked Android object';
+  const objectName = ctx.objectDescription?.trim();
   const locator = ctx.locator?.trim();
 
-  if (!locator) {
+  if (!objectName) {
     throw new Error(
-      `Custom Object Click cannot click "${objectName}": no linked Android object or XPath was supplied.`,
+      'Custom Object Click requires a linked Android UI object. Bind this step to the target element before running it.',
     );
   }
 
-  ctx.log(`Resolving and clicking ${objectName} with its linked Android XPath: ${locator}`);
+  if (!locator) {
+    throw new Error(
+      `Custom Object Click cannot click "${objectName}": the linked Android object has no XPath. Rebind the step to the target element.`,
+    );
+  }
+
+  ctx.log(`Resolving and clicking the linked Android object "${objectName}" with the current context.`);
 
   try {
-    // The Android context resolves the linked XPath to a live element for this execution.
-    // Use the helper rather than retaining an Appium element between test runs.
+    // Resolve the linked object afresh through Android's supported helper; do not retain a device element.
     await ctx.click();
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Custom Object Click could not resolve or click "${objectName}" using its linked XPath "${locator}": ${detail}`,
+      `Custom Object Click could not resolve or click the linked Android object "${objectName}": ${detail}`,
     );
   }
 }
